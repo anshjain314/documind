@@ -1,0 +1,28 @@
+# --- Core orchestration ---
+langgraph==0.2.60
+langchain-core==0.3.28
+
+# --- LLM (Groq - free, fast inference) ---
+groq==0.13.0
+
+# --- Embeddings + Reranking (Cohere - free tier) ---
+cohere==5.13.6
+
+# --- Vector DB (Pinecone - free tier) ---
+pinecone-client==5.0.1
+
+# --- Document loading + chunking ---
+pypdf==5.1.0
+
+# --- Keyword search (hybrid retrieval) ---
+rank-bm25==0.2.2
+
+# --- Tracing (LangSmith - free tier) ---
+langsmith==0.2.10
+
+# --- UI ---
+streamlit==1.40.2
+
+# --- Utilities ---
+python-dotenv==1.0.1
+numpy==1.26.4
