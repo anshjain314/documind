@@ -93,7 +93,11 @@ Initial testing surfaced a retrieval quality issue: asking "what is a Savonius t
 
 **Fix:** reduced chunk size to 250 words with a proportionally larger overlap (75 words), keeping headers closer to their content. Re-ingested and re-tested — the correct Savonius definition chunk then appeared as the second-highest-ranked result (relevance 0.63), directly reflected in the generated answer.
 
-## Setup
+## Live demo
+
+**[documind-ansh.streamlit.app](https://documind-ansh.streamlit.app)**
+
+Upload a PDF directly through the sidebar and ask questions about it, or try the pre-loaded renewable energy notes with a question like "what is a Savonius turbine?".
 
 1. Clone the repo and create a virtual environment:
    ```
