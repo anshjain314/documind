@@ -70,6 +70,7 @@ def route_query(state: GraphState) -> dict:
 def retrieve(state: GraphState) -> dict:
     query = state.get("query_for_retrieval") or state["question"]
     chunks = hybrid_retrieve(query, top_k=5)
+    print(f"    [debug] retrieved {len(chunks)} chunks for query: {query[:60]}")
     return {"retrieved_chunks": chunks}
 
 
