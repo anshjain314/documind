@@ -9,7 +9,8 @@ groq==0.13.0
 cohere==5.13.6
 
 # --- Vector DB (Pinecone - free tier) ---
-pinecone-client==5.0.1
+pinecone>=5.4.0
+pinecone-plugin-records>=1.0.0
 
 # --- Document loading + chunking ---
 pypdf==5.1.0
