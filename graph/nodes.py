@@ -71,6 +71,9 @@ def retrieve(state: GraphState) -> dict:
     query = state.get("query_for_retrieval") or state["question"]
     chunks = hybrid_retrieve(query, top_k=5)
     print(f"    [debug] retrieved {len(chunks)} chunks for query: {query[:60]}")
+    for i, c in enumerate(chunks):
+        text_preview = (c.get("text", "") or "")[:60].replace("\n", " ")
+        print(f"      [debug] chunk {i}: source={c.get('source', '?')!r} text_len={len(c.get('text', '') or '')} preview={text_preview!r}")
     return {"retrieved_chunks": chunks}
 
 
