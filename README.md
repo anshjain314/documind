@@ -93,6 +93,14 @@ Initial testing surfaced a retrieval quality issue: asking "what is a Savonius t
 
 **Fix:** reduced chunk size to 250 words with a proportionally larger overlap (75 words), keeping headers closer to their content. Re-ingested and re-tested — the correct Savonius definition chunk then appeared as the second-highest-ranked result (relevance 0.63), directly reflected in the generated answer.
 
+## A second real debugging example: shared state in production
+
+During CI setup, the eval suite started passing at 100% — but every answer said "there is no information in the given context," even for questions with obvious answers in the source PDFs. Deeper investigation (adding chunk-level debug logging to the retrieval node) revealed the actual retrieved chunks were always the same 2 chunks from an unrelated resume PDF, regardless of the query topic.
+
+**Root cause:** while testing the Streamlit file-upload feature, a test upload with "Replace existing documents" checked had wiped the shared Pinecone index and BM25 index, replacing 115 chunks of renewable-energy content with just 2 resume chunks. Since Pinecone is a shared cloud resource, this silently broke the local app, the deployed app, and CI simultaneously.
+
+This is a good illustration of why groundedness checks alone aren't sufficient for eval design: the system was technically "passing" by honestly reporting it found nothing, which masked a real underlying data problem. The fix had two parts: restoring the correct document set, and adding a confirmation guardrail in the UI so a destructive "replace all documents" action requires explicit double-confirmation before running.
+
 ## Live demo
 
 **[documind-ansh.streamlit.app](https://documind-ansh.streamlit.app)**

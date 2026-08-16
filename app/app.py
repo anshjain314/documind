@@ -60,7 +60,20 @@ with st.sidebar:
              "If unchecked, new documents are added alongside existing ones.",
     )
 
-    if uploaded_files and st.button("Ingest uploaded PDFs", type="primary"):
+    confirm_replace = True
+    if replace_existing:
+        st.warning(
+            "⚠️ This will permanently delete ALL currently indexed documents "
+            "(including ones other users may have uploaded) before adding the new ones."
+        )
+        confirm_replace = st.checkbox(
+            "I understand this will delete all existing documents",
+            value=False,
+        )
+
+    ingest_disabled = not uploaded_files or (replace_existing and not confirm_replace)
+
+    if uploaded_files and st.button("Ingest uploaded PDFs", type="primary", disabled=ingest_disabled):
         status_box = st.empty()
         log_lines = []
 
