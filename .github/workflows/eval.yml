@@ -1,0 +1,41 @@
+name: Eval Pipeline
+
+# Runs the groundedness eval suite whenever code is pushed to main or a PR
+# targets main. Fails the build (red X on the commit/PR) if the groundedness
+# pass rate drops below the threshold set in eval/run_eval.py.
+#
+# NOTE: this gates CI status only - it does not block Streamlit Cloud
+# deployment, since Streamlit Cloud auto-deploys on every push independently
+# of GitHub Actions results. Treat a failing check here as a signal to NOT
+# merge/deploy manually, not an automatic safeguard.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:  # allows manually triggering a run from the Actions tab
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run groundedness eval suite
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
+          PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+          PINECONE_INDEX_NAME: ${{ secrets.PINECONE_INDEX_NAME }}
+          LANGCHAIN_TRACING_V2: "false"  # keep CI runs out of your LangSmith trace history
+        run: python -m eval.run_eval
