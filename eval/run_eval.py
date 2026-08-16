@@ -6,14 +6,18 @@ Runs a set of test questions through the full pipeline and reports:
 - Route distribution (how many questions hit each branch)
 - Retry rate (how often the grader had to trigger a query rewrite)
 
-Edit EVAL_QUESTIONS below with 15-30 real questions based on YOUR PDFs
-before running this for real numbers.
+Exits with a non-zero status code if the groundedness pass rate falls below
+PASS_THRESHOLD, so this can be used as a CI gate (see .github/workflows/eval.yml).
 
 Run from the project root:
     python -m eval.run_eval
 """
 
+import sys
 from graph.build_graph import compiled_graph
+
+# Minimum acceptable groundedness pass rate for CI to succeed.
+PASS_THRESHOLD = 0.70
 
 # ---------------------------------------------------------------------------
 # EDIT THIS: replace with real questions based on YOUR uploaded PDFs.
@@ -90,6 +94,15 @@ def run_eval():
         status = "PASS" if r["groundedness_pass"] else "FAIL"
         print(f"[{status}] ({r['route']}, retries={r['retry_count']}) {r['question']}")
         print(f"       -> {r['answer_preview']}...")
+
+    pass_rate = grounded_pass / total if total else 0
+    print(f"\nPass rate: {pass_rate:.1%} (threshold: {PASS_THRESHOLD:.0%})")
+
+    if pass_rate < PASS_THRESHOLD:
+        print(f"FAILING: groundedness pass rate {pass_rate:.1%} is below the {PASS_THRESHOLD:.0%} threshold.")
+        sys.exit(1)
+    else:
+        print("PASSING: groundedness pass rate meets threshold.")
 
     return results
 

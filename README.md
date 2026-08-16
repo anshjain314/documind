@@ -118,4 +118,4 @@ To run the eval suite: `python -m eval.run_eval`
 - Retry cap is set to 1 (not the 3 typically used in production) to stay within free-tier LLM rate limits — a production deployment would raise this.
 - Chunking is word-count-based rather than semantic/structure-aware; a header-aware or sentence-boundary-aware chunker would likely improve retrieval precision further.
 - No persistent conversation memory across sessions — each question is handled independently.
-- Not yet containerized/deployed to a live URL (local-only for this build).
+- CI (GitHub Actions) gates code quality but does not block Streamlit Cloud deployment, since Streamlit Cloud auto-deploys on every push independently of CI results.
